@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Test</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+		<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
+		<script src="app.js" defer></script>
+		<script src="https://unpkg.com/alpinejs" defer></script>
+
+		<style>
+			[x-cloak] {display: none !important;}
+		</style>
+	</head>
+	<body x-data="getApp" x-init="getTrades" x-cloak>
+	<section class="section">
+		<div class="container">
+			<p x-show="trades.length == 0">Loading...</p>
+			<table class="table is-bordered is-narrow" style="text-align: center" x-show="trades.length">
+				<thead>
+					<tr>
+						<th style="text-align: left">Инструмент</th>
+						<th>4H</th>
+						<th>1W</th>
+						<th colspan="2">Поддержка</th>
+						<th>Цена</th>
+						<th colspan="2">Сопротивление</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template x-for="trade in trades">
+					<tr>
+						<td style="text-align: left" x-text="trade.codeTS"></td>
+						<td><a @click="showSeries(trade.codeTS, '4h')">graph</a></td>
+						<td><a @click="showSeries(trade.codeTS, '1w')">graph</a></td>
+						<td x-text="parseFloat(trade.supp.toPrecision(9))"></td>
+						<td x-text="trade.suppprc.toFixed(2) + '%'"></td>
+						<td><b x-text="parseFloat(trade.price.toPrecision(9))"></b></td>
+						<td x-text="trade.resisprc.toFixed(2) + '%'"></td>
+						<td x-text="parseFloat(trade.resis.toPrecision(9))"></td>
+					</tr>
+					</template>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal" :class="isModalOpen ? 'is-active' : ''">
+			<div class="modal-background" @click="isModalOpen = false"></div>
+			<div class="modal-content box">
+				<p x-show="isLoading">Loading...</p>
+				<div id="chart"></div>
+			</div>
+			<button class="modal-close is-large" @click="isModalOpen = false"></button>
+		</div>
+	</section>
+	</body>
+</html>
